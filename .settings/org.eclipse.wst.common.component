@@ -5,6 +5,9 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
+        <dependent-module archiveName="jtools-1.11.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jtools/jtools">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="jtoolWeb"/>
         <property name="java-output-path" value="/jtoolWeb/target/classes"/>
     </wb-module>
