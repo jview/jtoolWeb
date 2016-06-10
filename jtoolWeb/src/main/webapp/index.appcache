@@ -1,0 +1,9 @@
+CACHE MANIFEST
+# 2014-10-09 0016
+styles/bootstrap.min.css
+
+scripts/lib/jquery-2.0.1.min.js
+scripts/lib/jquery-2.0.1.min.map
+
+NETWORK:
+*

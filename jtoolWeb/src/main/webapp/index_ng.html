@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="zh-hans" ng-app="JtoolWebModule" manifest="index_ng.appcache">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=0.5" />
+	<link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css" />
+
+	<link rel="stylesheet" href="css/ngDialog.css">
+	<link rel="stylesheet" href="css/ngDialog-theme-default.css">
+	<link rel="stylesheet" href="css/ngDialog-theme-plain.css">
+	<link rel="stylesheet" href="css/ngDialog-custom-width.css">
+
+	<script type="text/javascript" src="scripts/lib/angular-1.4.1.js"></script>
+	<script type="text/javascript" src="scripts/lib/ngDialog-0.4.0.js"></script>
+	<script type="text/javascript" src="scripts/jtool/jtoolWeb.js"></script>
+
+	<title>jtool/db</title>
+
+	<style>
+	a, button {
+		font: 14px 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+		display: block;
+		color: #333;
+		margin-bottom: 10px;
+	}
+
+	/* The following 'important' styles are just here to show off trapFocus */
+	button.ngdialog-button {
+		border: solid transparent 1px !important;
+	}
+
+	button.ngdialog-button:focus {
+		border: solid black 1px !important;
+	}
+
+	.ngdialog h2:focus { outline: none; }
+	</style>
+
+</head>
+
+<body>
+	<div class="container" ng-controller="jtoolDo">
+		<div class="form-inline">
+			<div class="form-group">
+				<select id="types" name="types" ng-model="types">
+					<option value="dbs">dbs</option>
+					<option value="tools">tools</option>
+				</select> <input type="text" id="paras" name="paras" ng-model="paras"
+				ng-keyup="myKeyup($event)" value="" placeholder="help">
+				<button type="button" class="btn btn-default" ng-click="doSubmit()">OK</button>
+				<button type="button" class="btn btn-default" ng-click="showHistory()">History</button>
+				<button type="button" class="btn btn-default" ng-click="doClean()">Clean</button>
+			</div>
+		</div>
+		<textarea id="result" ng-model="result" rows="20" class="form-control">
+		</textarea>
+	</div>
+
+</body>
+</html>
