@@ -11,7 +11,7 @@
   		<dependency>
 		  <groupId>org.jview.jtools</groupId>
 		  <artifactId>jtools</artifactId>
-		  <version>1.10</version>
+		  <version>1.11</version>
 		</dependency>
   		<dependency>
 			<groupId>cal</groupId>  
