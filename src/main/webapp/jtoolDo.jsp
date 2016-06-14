@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="org.jview.jtool.manager.*,com.jview.common.util.*, com.jview.common.domain.JtoolOper" %>
-<%@ page import="java.util.*, net.sf.json.*, org.apache.commons.lang.exception.NestableRuntimeException" %>
+<%@ page import="java.util.*,java.net.URLDecoder, net.sf.json.*, org.apache.commons.lang.exception.NestableRuntimeException" %>
 	<%
 	String realPath=request.getRealPath("/");
    String fileName="jtool.log";
@@ -19,6 +19,14 @@
 	}
 	String paras = request.getParameter("paras");
 	String types = request.getParameter("types");
+	String encodeType = request.getParameter("encodeType");
+	if("urlEncode".equals(encodeType)){
+		paras = URLDecoder.decode(paras);
+	}
+	String paras_upper_first=paras.substring(0,1).toUpperCase()+paras.substring(1);
+	if(paras_upper_first.equals(paras)){
+		paras=paras.toLowerCase();
+	}
 	System.out.println("types="+types);
 	List<String> dataList = new ArrayList<String>();
 	if(paras!=null && paras.length()!=0){

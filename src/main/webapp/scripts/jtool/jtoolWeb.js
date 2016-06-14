@@ -117,7 +117,8 @@ app.controller('jtoolDo', function($scope,$rootScope, $http, ngDialog) {
         }
     	var params = {params:{
             types: types,
-            paras: paras
+            encodeType:'urlEncode',
+            paras: encodeURI(paras)
         }};
         $http.post('jtoolDo.jsp', params, params).success(function(data){
         	//console.log('---post--data--'+data);

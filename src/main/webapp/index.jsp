@@ -79,7 +79,7 @@ pageEncoding="UTF-8"%>
     	$.ajax({
     		type: "POST",
     		url: "jtoolDo.jsp",
-    		data: "types="+types+"&paras="+paras,
+    		data: {"types":types,"paras":paras},
     		success: function(msg){
     			if(msg && typeof(msg)=='string'){
     				msg=msg.trim();
