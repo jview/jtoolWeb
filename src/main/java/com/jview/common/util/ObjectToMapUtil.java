@@ -1,8 +1,11 @@
 package com.jview.common.util;
 
-import java.lang.reflect.Field;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +15,61 @@ import org.apache.log4j.Logger;
 
 public class ObjectToMapUtil {
 	private static  Logger logger=Logger.getLogger(ObjectToMapUtil.class); 
+	/**
+	 * 对象转map
+	 * @param bean
+	 * @return
+	 * @throws IntrospectionException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	public static Map<String, Object> objectToMap(Object bean) 
+            throws IntrospectionException, IllegalAccessException, InvocationTargetException { 
+        Class type = bean.getClass(); 
+        Map<String, Object> returnMap = new HashMap<>(); 
+        BeanInfo beanInfo = Introspector.getBeanInfo(type); 
+
+        PropertyDescriptor[] propertyDescriptors =  beanInfo.getPropertyDescriptors(); 
+        for (int i = 0; i< propertyDescriptors.length; i++) { 
+            PropertyDescriptor descriptor = propertyDescriptors[i]; 
+            String propertyName = descriptor.getName(); 
+            if (!propertyName.equals("class")) { 
+                Method readMethod = descriptor.getReadMethod(); 
+                Object result = readMethod.invoke(bean, new Object[0]); 
+                if (result != null) { 
+                    returnMap.put(propertyName, result); 
+                } else { 
+//                    returnMap.put(propertyName, ""); 
+                } 
+            } 
+        } 
+        return returnMap; 
+    } 
+	
+	/**
+	 * map转对象
+	 * @param map
+	 * @param beanClass
+	 * @return
+	 * @throws Exception
+	 */
+	 public static Object mapToObject(Map<String, Object> map, Class<?> beanClass) throws Exception {    
+	        if (map == null)   
+	            return null;    
+	  
+	        Object obj = beanClass.newInstance();  
+	  
+	        BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());    
+	        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();    
+	        for (PropertyDescriptor property : propertyDescriptors) {  
+	            Method setter = property.getWriteMethod();    
+	            if (setter != null) {  
+	                setter.invoke(obj, map.get(property.getName()));   
+	            }  
+	        }  
+	  
+	        return obj;  
+	    }
 	/**
 	 * 
 	 * ��vo����getType���ͣ���vo����ֵ���ҳ�propNames��Ӧ�����Լ�����ֵ����map����
@@ -37,67 +95,46 @@ public class ObjectToMapUtil {
 			props[i]=props[i].trim();
 		}
 		
-		Field[] fields=data.getClass().getDeclaredFields();
-		Method[] methods=data.getClass().getDeclaredMethods();
-		
-		String pri=null;
-		String fieldName=null;
-		String fieldNameUp1=null;
-		
-		String methodName=null;
-		
-		Object propValue=null;
+		BeanInfo beanInfo = Introspector.getBeanInfo(data.getClass()); 
+
 		boolean isIgnore=false;
 		
-		for(Field field:fields){
-			fieldName=field.getName();
-			pri=Modifier.toString(field.getModifiers());
-			fieldNameUp1=fieldName.substring(0,1).toUpperCase()+fieldName.substring(1);
-//			System.out.println("----fieldName="+fieldName+" pri="+pri+" fieldName="+fieldName);
-			if("private".equals(pri)){
-				if("ignore".equals(getType)){
-					isIgnore=false;
-					for(String prop:props){
-						if(fieldName.equals(prop)){
-							isIgnore=true;
-							break;
-						}
-					}
-					if(!isIgnore){
-						for(Method method:methods){
-							methodName=method.getName();
-							pri=Modifier.toString(method.getModifiers());
-							if("public".equals(pri) && methodName.equals("get"+fieldNameUp1)){
-								propValue=method.invoke(data, null);
-								if(propValue!=null)
-									map.put(fieldName, propValue);
-								break;
-							}
-						}
-					}
-				}
-				else if("include".equals(getType)){
-					for(String prop:props){
-						if(fieldName.equals(prop)){
-							for(Method method:methods){
-								methodName=method.getName();
-								pri=Modifier.toString(method.getModifiers());
-								if("public".equals(pri) && methodName.equals("get"+fieldNameUp1)){
-									propValue=method.invoke(data, null);
-									if(propValue!=null)
-										map.put(fieldName, propValue);
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
-				
-			}
-			
-		}
-
+		PropertyDescriptor[] propertyDescriptors =  beanInfo.getPropertyDescriptors(); 
+        for (int i = 0; i< propertyDescriptors.length; i++) { 
+            PropertyDescriptor descriptor = propertyDescriptors[i]; 
+            String propertyName = descriptor.getName();
+            if (!propertyName.equals("class")) { 
+                Method readMethod = descriptor.getReadMethod(); 
+                Object result = readMethod.invoke(data, new Object[0]);
+                if (result != null) {
+                	//忽略模式
+                	if("ignore".equals(getType)){
+    					isIgnore=false;
+    					for(String prop:props){
+    						if(propertyName.equals(prop)){
+    							isIgnore=true;
+    							break;
+    						}
+    					}
+    					if(!isIgnore){
+    						map.put(propertyName, result); 
+    					}
+                	}
+                	//包含模式
+                	else if("include".equals(getType)){
+                		for(String prop:props){
+                			if(propertyName.equals(prop)){
+                				map.put(propertyName, result);
+                				break;
+                			}
+                		}
+                	}
+                    
+                } else { 
+//                    returnMap.put(propertyName, ""); 
+                } 
+            } 
+        } 
 		return map;
 	}
 	
